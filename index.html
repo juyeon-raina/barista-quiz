@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>備料練習測驗</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans TC',sans-serif;background:#fdf8f0;}
+.wrap{display:flex;flex-direction:column;height:100svh;max-width:430px;margin:0 auto;background:#fff;overflow:hidden;}
+
+.hdr{padding:12px 16px 8px;border-bottom:1px solid #e8e2da;flex-shrink:0;}
+.drink-name{font-size:23px;font-weight:600;letter-spacing:-0.02em;color:#1a1208;}
+.meta{display:flex;gap:8px;margin-top:5px;align-items:center;}
+.badge{font-size:11px;font-weight:600;padding:3px 10px;border-radius:999px;}
+.cold{background:#dbeafe;color:#1d4ed8;}
+.hot{background:#fee2e2;color:#dc2626;}
+.gray{background:#f5f0e8;color:#6b5744;border:1px solid #e8e2da;}
+.ml-auto{margin-left:auto;font-size:13px;font-weight:600;}
+
+.top{flex-shrink:0;padding:10px 14px 8px;border-bottom:1px solid #e8e2da;}
+.sec{font-size:10px;font-weight:600;color:#a8998a;letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px;}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:7px;}
+.ibtn{padding:10px 4px;background:#f5f0e8;border:1px solid #e0d6c8;border-radius:10px;font-size:14px;font-weight:600;color:#3d2b1a;cursor:pointer;text-align:center;}
+.ibtn:active{background:#ebe4d8;}
+.syrup-row{display:flex;gap:6px;margin-bottom:7px;}
+.sbtn{flex:1;padding:9px 4px;background:#fffbeb;border:1px solid #fbbf24;border-radius:10px;font-size:13px;font-weight:600;color:#92400e;cursor:pointer;text-align:center;}
+.sbtn:active{background:#fef3c7;}
+.morebtn{width:100%;padding:8px;background:transparent;border:1px solid #d6ccc0;border-radius:10px;font-size:13px;font-weight:500;color:#7a6a5a;cursor:pointer;}
+
+/* PENDING PANEL */
+.pend{flex-shrink:0;padding:10px 14px;background:#fffbeb;border-bottom:1px solid #fcd34d;}
+.pend-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.pend-title{font-size:10px;font-weight:700;color:#92400e;letter-spacing:.06em;text-transform:uppercase;}
+.pend-cancel{background:none;border:none;font-size:20px;color:#92400e;cursor:pointer;padding:0;line-height:1;}
+.pills{display:flex;flex-wrap:wrap;gap:6px;}
+.pill{padding:7px 13px;background:#fff;border:1px solid #fcd34d;border-radius:999px;font-size:13px;font-weight:600;color:#92400e;cursor:pointer;white-space:nowrap;}
+.pill:active{background:#fef3c7;}
+.pill.other{background:transparent;border-style:dashed;color:#b45309;}
+
+/* STEP LIST */
+.bot{flex:1;padding:8px 14px;overflow-y:auto;display:flex;flex-direction:column;}
+.empty{text-align:center;color:#b0a090;font-size:13px;padding:20px 0;}
+.srow{display:flex;align-items:center;gap:5px;margin-bottom:5px;background:#f8f4ee;border-radius:10px;padding:6px 8px;}
+.snum{font-size:11px;font-weight:600;color:#b0a090;min-width:18px;text-align:center;flex-shrink:0;}
+.slbl{font-size:13px;font-weight:600;color:#3d2b1a;flex-shrink:0;min-width:54px;}
+.cc-wrap{display:flex;align-items:center;gap:3px;flex:1;min-width:0;}
+.cc-num{flex:1;min-width:0;border:1px solid #d6ccc0;border-radius:7px;padding:4px 7px;font-size:13px;background:#fff;color:#3d2b1a;outline:none;-moz-appearance:textfield;}
+.cc-num::-webkit-outer-spin-button,.cc-num::-webkit-inner-spin-button{-webkit-appearance:none;}
+.cc-unit{font-size:12px;font-weight:600;color:#7a6a5a;flex-shrink:0;}
+.ainp{flex:1;min-width:0;border:1px solid #d6ccc0;border-radius:7px;padding:4px 7px;font-size:13px;background:#fff;color:#3d2b1a;outline:none;}
+.ainp:focus,.cc-num:focus{border-color:#f59e0b;outline:none;}
+.atag{flex:1;font-size:12px;color:#b0a090;font-style:italic;padding-left:4px;}
+.delbtn{width:22px;height:22px;border:none;background:none;color:#c0b0a0;cursor:pointer;font-size:18px;padding:0;flex-shrink:0;line-height:1;}
+
+.foot{display:flex;gap:7px;padding:7px 14px 14px;flex-shrink:0;border-top:1px solid #e8e2da;}
+.subbtn{flex:1;padding:12px;background:#3d2b1a;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;}
+.subbtn:disabled{opacity:.35;cursor:not-allowed;}
+.clrbtn{padding:12px 14px;background:transparent;border:1px solid #d6ccc0;border-radius:10px;font-size:13px;color:#7a6a5a;cursor:pointer;}
+
+/* MORE SHEET */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:20;display:flex;flex-direction:column;justify-content:flex-end;max-width:430px;margin:0 auto;}
+.msheet{background:#fff;border-radius:16px 16px 0 0;padding:14px 14px 26px;}
+.mhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.mtitle{font-size:14px;font-weight:600;}
+.mclosebtn{background:none;border:none;font-size:22px;cursor:pointer;color:#7a6a5a;padding:0;line-height:1;}
+.mgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;}
+.mitm{padding:10px 4px;background:#f5f0e8;border:1px solid #e0d6c8;border-radius:10px;font-size:12px;font-weight:600;color:#3d2b1a;cursor:pointer;text-align:center;line-height:1.3;}
+.mitm.act{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe;}
+.mitm.spc{background:#fffbeb;color:#92400e;border-color:#fcd34d;}
+.mitm:active{opacity:.7;}
+
+/* RESULT */
+.rwrap{flex:1;padding:10px 14px;overflow-y:auto;}
+.rrow{display:flex;gap:7px;padding:8px 10px;margin-bottom:5px;border-radius:10px;}
+.rrow.ok{background:#f0fdf4;border:1px solid #86efac;}
+.rrow.fail{background:#fef2f2;border:1px solid #fca5a5;}
+.rico{font-size:14px;flex-shrink:0;margin-top:2px;}
+.rrow.ok .rico{color:#16a34a;}
+.rrow.fail .rico{color:#dc2626;}
+.rbody{flex:1;font-size:12px;line-height:1.55;}
+.rtit{font-weight:700;}
+.rrow.ok .rtit{color:#16a34a;}
+.rrow.fail .rtit{color:#dc2626;}
+.rcorrect{color:#16a34a;}
+.rwrong{color:#dc2626;}
+.rhint{color:#7a6a5a;}
+.score-ok{color:#16a34a;}
+.score-fail{color:#dc2626;}
+
+.start{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:32px 24px;flex:1;}
+</style>
+</head>
+<body>
+<div id="app" class="wrap"></div>
+<script>
+const RECIPES=[
+  {name:'美式',temp:'冰',size:'中',steps:[{key:'ice',label:'冰塊',amount:'滿杯'},{key:'water',label:'RO水',amount:'8.5分滿'},{key:'espresso',label:'咖啡底',amount:'1個'}]},
+  {name:'美式',temp:'冰',size:'大',steps:[{key:'ice',label:'冰塊',amount:'滿杯'},{key:'water',label:'RO水',amount:'8.5分滿'},{key:'espresso',label:'咖啡底',amount:'1.5個'}]},
+  {name:'美式',temp:'冰',size:'特大',steps:[{key:'ice',label:'冰塊',amount:'滿杯'},{key:'water',label:'RO水',amount:'8.5分滿'},{key:'espresso',label:'咖啡底',amount:'2個'}]},
+  {name:'美式',temp:'熱',size:'中',steps:[{key:'water',label:'熱水',amount:'240cc'},{key:'espresso',label:'咖啡底',amount:'1個'}]},
+  {name:'美式',temp:'熱',size:'大',steps:[{key:'water',label:'熱水',amount:'350cc'},{key:'espresso',label:'咖啡底',amount:'1.5個'}]},
+  {name:'拿鐵',temp:'冰',size:'中',steps:[{key:'milk',label:'牛奶',amount:'200cc'},{key:'ice',label:'冰塊',amount:'8.5分滿'},{key:'espresso',label:'咖啡底',amount:'1個'}]},
+  {name:'拿鐵',temp:'冰',size:'大',steps:[{key:'milk',label:'牛奶',amount:'260cc'},{key:'ice',label:'冰塊',amount:'8.5分滿'},{key:'espresso',label:'咖啡底',amount:'1.5個'}]},
+  {name:'拿鐵',temp:'冰',size:'特大',steps:[{key:'milk',label:'牛奶',amount:'320cc'},{key:'ice',label:'冰塊',amount:'8.5分滿'},{key:'espresso',label:'咖啡底',amount:'2個'}]},
+  {name:'拿鐵',temp:'熱',size:'中',steps:[{key:'espresso',label:'咖啡底',amount:'1個'},{key:'milk',label:'打好的牛奶',amount:'300cc'}]},
+  {name:'拿鐵',temp:'熱',size:'大',steps:[{key:'espresso',label:'咖啡底',amount:'1.5個'},{key:'milk',label:'打好的牛奶',amount:'340cc'}]},
+  {name:'精品美式',temp:'冰',size:'中',steps:[{key:'ice',label:'冰塊',amount:'滿杯'},{key:'water',label:'RO水',amount:'8.5分滿'},{key:'espresso',label:'精品咖啡底',amount:'1個'}]},
+  {name:'精品美式',temp:'冰',size:'大',steps:[{key:'ice',label:'冰塊',amount:'滿杯'},{key:'water',label:'RO水',amount:'8.5分滿'},{key:'espresso',label:'精品咖啡底',amount:'1.5個'}]},
+  {name:'精品美式',temp:'冰',size:'特大',steps:[{key:'ice',label:'冰塊',amount:'滿杯'},{key:'water',label:'RO水',amount:'8.5分滿'},{key:'espresso',label:'精品咖啡底',amount:'2個'}]},
+  {name:'精品美式',temp:'熱',size:'中',steps:[{key:'water',label:'熱水',amount:'240cc'},{key:'espresso',label:'精品咖啡底',amount:'1個'}]},
+  {name:'精品美式',temp:'熱',size:'大',steps:[{key:'water',label:'熱水',amount:'350cc'},{key:'espresso',label:'精品咖啡底',amount:'1.5個'}]},
+  {name:'精品拿鐵',temp:'冰',size:'中',steps:[{key:'milk',label:'牛奶',amount:'200cc'},{key:'ice',label:'冰塊',amount:'8.5分滿'},{key:'espresso',label:'精品咖啡底',amount:'1個'}]},
+  {name:'精品拿鐵',temp:'冰',size:'大',steps:[{key:'milk',label:'牛奶',amount:'260cc'},{key:'ice',label:'冰塊',amount:'8.5分滿'},{key:'espresso',label:'精品咖啡底',amount:'1.5個'}]},
+  {name:'精品拿鐵',temp:'冰',size:'特大',steps:[{key:'milk',label:'牛奶',amount:'320cc'},{key:'ice',label:'冰塊',amount:'8.5分滿'},{key:'espresso',label:'精品咖啡底',amount:'2個'}]},
+  {name:'精品拿鐵',temp:'熱',size:'中',steps:[{key:'espresso',label:'精品咖啡底',amount:'1個'},{key:'milk',label:'打好的牛奶',amount:'300cc'}]},
+  {name:'精品拿鐵',temp:'熱',size:'大',steps:[{key:'espresso',label:'精品咖啡底',amount:'1.5個'},{key:'milk',label:'打好的牛奶',amount:'340cc'}]},
+  {name:'微韻輕美式',temp:'冰',size:'中',steps:[{key:'ice',label:'冰塊',amount:'滿杯'},{key:'water',label:'RO水',amount:'9分滿'},{key:'espresso',label:'咖啡底',amount:'0.5個'}]},
+  {name:'微韻輕美式',temp:'冰',size:'大',steps:[{key:'ice',label:'冰塊',amount:'滿杯'},{key:'water',label:'RO水',amount:'9分滿'},{key:'espresso',label:'咖啡底',amount:'1個'}]},
+  {name:'微韻輕美式',temp:'冰',size:'特大',steps:[{key:'ice',label:'冰塊',amount:'滿杯'},{key:'water',label:'RO水',amount:'9分滿'},{key:'espresso',label:'咖啡底',amount:'1.5個'}]},
+  {name:'微韻輕美式',temp:'熱',size:'中',steps:[{key:'water',label:'熱水',amount:'240cc'},{key:'espresso',label:'咖啡底',amount:'0.5個'}]},
+  {name:'微韻輕美式',temp:'熱',size:'大',steps:[{key:'water',label:'熱水',amount:'350cc'},{key:'espresso',label:'咖啡底',amount:'1個'}]},
+  {name:'經典燕麥拿鐵',temp:'冰',size:'中',steps:[{key:'milk',label:'OATLY燕麥奶',amount:'搖勻200cc'},{key:'ice',label:'冰塊',amount:'9分滿'},{key:'espresso',label:'咖啡底',amount:'0.5個'}]},
+  {name:'經典燕麥拿鐵',temp:'冰',size:'大',steps:[{key:'milk',label:'OATLY燕麥奶',amount:'搖勻260cc'},{key:'ice',label:'冰塊',amount:'9分滿'},{key:'espresso',label:'咖啡底',amount:'1個'}]},
+  {name:'經典燕麥拿鐵',temp:'冰',size:'特大',steps:[{key:'milk',label:'OATLY燕麥奶',amount:'搖勻320cc'},{key:'ice',label:'冰塊',amount:'9分滿'},{key:'espresso',label:'咖啡底',amount:'1.5個'}]},
+  {name:'經典燕麥拿鐵',temp:'熱',size:'中',steps:[{key:'espresso',label:'咖啡底',amount:'0.5個'},{key:'milk',label:'OATLY燕麥奶',amount:'打熱300cc'}]},
+  {name:'經典燕麥拿鐵',temp:'熱',size:'大',steps:[{key:'espresso',label:'咖啡底',amount:'1個'},{key:'milk',label:'OATLY燕麥奶',amount:'打熱340cc'}]},
+  {name:'微韻燕麥拿鐵',temp:'冰',size:'中',steps:[{key:'milk',label:'OATSIDE燕麥奶',amount:'搖勻200cc'},{key:'ice',label:'冰塊',amount:'9分滿'},{key:'espresso',label:'咖啡底',amount:'0.5個'}]},
+  {name:'微韻燕麥拿鐵',temp:'冰',size:'大',steps:[{key:'milk',label:'OATSIDE燕麥奶',amount:'搖勻260cc'},{key:'ice',label:'冰塊',amount:'9分滿'},{key:'espresso',label:'咖啡底',amount:'1個'}]},
+  {name:'微韻燕麥拿鐵',temp:'冰',size:'特大',steps:[{key:'milk',label:'OATSIDE燕麥奶',amount:'搖勻320cc'},{key:'ice',label:'冰塊',amount:'9分滿'},{key:'espresso',label:'咖啡底',amount:'1.5個'}]},
+  {name:'微韻燕麥拿鐵',temp:'熱',size:'中',steps:[{key:'espresso',label:'咖啡底',amount:'0.5個'},{key:'milk',label:'OATSIDE燕麥奶',amount:'打熱300cc'}]},
+  {name:'微韻燕麥拿鐵',temp:'熱',size:'大',steps:[{key:'espresso',label:'咖啡底',amount:'1個'},{key:'milk',label:'OATSIDE燕麥奶',amount:'打熱340cc'}]},
+  {name:'微韻輕拿鐵',temp:'冰',size:'中',steps:[{key:'milk',label:'牛奶',amount:'200cc'},{key:'ice',label:'冰塊',amount:'8.5分滿'},{key:'espresso',label:'咖啡底',amount:'0.5個'}]},
+  {name:'微韻輕拿鐵',temp:'冰',size:'大',steps:[{key:'milk',label:'牛奶',amount:'260cc'},{key:'ice',label:'冰塊',amount:'8.5分滿'},{key:'espresso',label:'咖啡底',amount:'1個'}]},
+  {name:'微韻輕拿鐵',temp:'冰',size:'特大',steps:[{key:'milk',label:'牛奶',amount:'320cc'},{key:'ice',label:'冰塊',amount:'8.5分滿'},{key:'espresso',label:'咖啡底',amount:'1.5個'}]},
+  {name:'微韻輕拿鐵',temp:'熱',size:'中',steps:[{key:'espresso',label:'咖啡底',amount:'0.5個'},{key:'milk',label:'打好的牛奶',amount:'300cc'}]},
+  {name:'微韻輕拿鐵',temp:'熱',size:'大',steps:[{key:'espresso',label:'咖啡底',amount:'1個'},{key:'milk',label:'打好的牛奶',amount:'340cc'}]},
+  {name:'海鹽焦糖拿鐵',temp:'冰',size:'中',steps:[{key:'caramel_salt',label:'海鹽焦糖',amount:'2下'},{key:'milk',label:'牛奶',amount:'200cc'},{key:'ice',label:'冰塊',amount:'8.5分滿'},{key:'espresso',label:'咖啡底',amount:'1個'},{key:'sea_salt',label:'海鹽',amount:'2圈'}]},
+  {name:'海鹽焦糖拿鐵',temp:'冰',size:'大',steps:[{key:'caramel_salt',label:'海鹽焦糖',amount:'2.5下'},{key:'milk',label:'牛奶',amount:'260cc'},{key:'ice',label:'冰塊',amount:'8.5分滿'},{key:'espresso',label:'咖啡底',amount:'1.5個'},{key:'sea_salt',label:'海鹽',amount:'2圈'}]},
+  {name:'海鹽焦糖拿鐵',temp:'冰',size:'特大',steps:[{key:'caramel_salt',label:'海鹽焦糖',amount:'3下'},{key:'milk',label:'牛奶',amount:'320cc'},{key:'ice',label:'冰塊',amount:'8.5分滿'},{key:'espresso',label:'咖啡底',amount:'1.5個'},{key:'sea_salt',label:'海鹽',amount:'2圈'}]},
+  {name:'海鹽焦糖拿鐵',temp:'熱',size:'中',steps:[{key:'caramel_salt',label:'海鹽焦糖',amount:'2下'},{key:'espresso',label:'咖啡底',amount:'1個'},{key:'milk',label:'打好的牛奶',amount:'300cc'},{key:'sea_salt',label:'海鹽',amount:'2圈'}]},
+  {name:'海鹽焦糖拿鐵',temp:'熱',size:'大',steps:[{key:'caramel_salt',label:'海鹽焦糖',amount:'2.5下'},{key:'espresso',label:'咖啡底',amount:'1.5個'},{key:'milk',label:'打好的牛奶',amount:'340cc'},{key:'sea_salt',label:'海鹽',amount:'2圈'}]},
+  {name:'焦糖瑪奇朵',temp:'冰',size:'中',steps:[{key:'compound',label:'香草＋焦糖海鹽',amount:'各1下'},{key:'milk',label:'牛奶',amount:'170cc'},{key:'ice',label:'冰塊',amount:'7.5分滿'},{key:'espresso',label:'咖啡底',amount:'1個'},{key:'action',label:'冰奶泡',amount:''},{key:'action',label:'焦糖花',amount:''}]},
+  {name:'焦糖瑪奇朵',temp:'冰',size:'大',steps:[{key:'compound',label:'香草＋焦糖海鹽',amount:'各4/3下'},{key:'milk',label:'牛奶',amount:'230cc'},{key:'ice',label:'冰塊',amount:'7.5分滿'},{key:'espresso',label:'咖啡底',amount:'1.5個'},{key:'action',label:'冰奶泡',amount:''},{key:'action',label:'焦糖花',amount:''}]},
+  {name:'焦糖瑪奇朵',temp:'冰',size:'特大',steps:[{key:'compound',label:'香草＋焦糖海鹽',amount:'各1.5下'},{key:'milk',label:'牛奶',amount:'290cc'},{key:'ice',label:'冰塊',amount:'7.5分滿'},{key:'espresso',label:'咖啡底',amount:'2個'},{key:'action',label:'冰奶泡',amount:''},{key:'action',label:'焦糖花',amount:''}]},
+  {name:'焦糖瑪奇朵',temp:'熱',size:'中',steps:[{key:'compound',label:'香草＋焦糖海鹽',amount:'各1下'},{key:'espresso',label:'咖啡底',amount:'1個'},{key:'milk',label:'打好的牛奶',amount:'300cc'},{key:'action',label:'焦糖花',amount:''}]},
+  {name:'焦糖瑪奇朵',temp:'熱',size:'大',steps:[{key:'compound',label:'香草＋焦糖海鹽',amount:'各4/3下'},{key:'espresso',label:'咖啡底',amount:'1.5個'},{key:'milk',label:'打好的牛奶',amount:'340cc'},{key:'action',label:'焦糖花',amount:''}]},
+  {name:'卡布奇諾',temp:'冰',size:'中',steps:[{key:'milk',label:'牛奶',amount:'170cc'},{key:'ice',label:'冰塊',amount:'8.5分滿'},{key:'espresso',label:'咖啡底',amount:'1.5個'}]},
+  {name:'卡布奇諾',temp:'冰',size:'大',steps:[{key:'milk',label:'牛奶',amount:'230cc'},{key:'ice',label:'冰塊',amount:'8.5分滿'},{key:'espresso',label:'咖啡底',amount:'2個'}]},
+  {name:'卡布奇諾',temp:'冰',size:'特大',steps:[{key:'milk',label:'牛奶',amount:'290cc'},{key:'ice',label:'冰塊',amount:'8.5分滿'},{key:'espresso',label:'咖啡底',amount:'2.5個'}]},
+  {name:'卡布奇諾',temp:'熱',size:'中',steps:[{key:'espresso',label:'咖啡底',amount:'1.5個'},{key:'milk',label:'打好的牛奶',amount:'300cc'}]},
+  {name:'卡布奇諾',temp:'熱',size:'大',steps:[{key:'espresso',label:'咖啡底',amount:'2個'},{key:'milk',label:'打好的牛奶',amount:'340cc'}]},
+  {name:'特調咖啡',temp:'冰',size:'中',steps:[{key:'sugar',label:'蔗糖',amount:'2下'},{key:'compound',label:'奶精＋RO水',amount:'100cc+60cc'},{key:'ice',label:'冰塊',amount:'8.5分滿'},{key:'espresso',label:'咖啡底',amount:'1個'}]},
+  {name:'特調咖啡',temp:'冰',size:'大',steps:[{key:'sugar',label:'蔗糖',amount:'2.5下'},{key:'compound',label:'奶精＋RO水',amount:'140cc+80cc'},{key:'ice',label:'冰塊',amount:'8.5分滿'},{key:'espresso',label:'咖啡底',amount:'1.5個'}]},
+  {name:'特調咖啡',temp:'冰',size:'特大',steps:[{key:'sugar',label:'蔗糖',amount:'3下'},{key:'compound',label:'奶精＋RO水',amount:'180cc+100cc'},{key:'ice',label:'冰塊',amount:'8.5分滿'},{key:'espresso',label:'咖啡底',amount:'2個'}]},
+  {name:'特調咖啡',temp:'熱',size:'中',steps:[{key:'sugar',label:'蔗糖',amount:'2下'},{key:'compound',label:'奶精＋熱水打熱',amount:'100cc+140cc'},{key:'espresso',label:'咖啡底',amount:'1個'}]},
+  {name:'特調咖啡',temp:'熱',size:'大',steps:[{key:'sugar',label:'蔗糖',amount:'2.5下'},{key:'compound',label:'奶精＋熱水打熱',amount:'140cc+210cc'},{key:'espresso',label:'咖啡底',amount:'1.5個'}]},
+  {name:'蜂蜜拿鐵',temp:'冰',size:'中',steps:[{key:'honey',label:'蜂蜜',amount:'2下'},{key:'espresso',label:'咖啡底',amount:'1個'},{key:'action',label:'攪拌均勻',amount:''},{key:'ice',label:'冰塊',amount:'6分滿'},{key:'milk',label:'牛奶',amount:'200cc'}]},
+  {name:'蜂蜜拿鐵',temp:'冰',size:'大',steps:[{key:'honey',label:'蜂蜜',amount:'2.5下'},{key:'espresso',label:'咖啡底',amount:'1.5個'},{key:'action',label:'攪拌均勻',amount:''},{key:'ice',label:'冰塊',amount:'6分滿'},{key:'milk',label:'牛奶',amount:'260cc'}]},
+  {name:'蜂蜜拿鐵',temp:'冰',size:'特大',steps:[{key:'honey',label:'蜂蜜',amount:'3下'},{key:'espresso',label:'咖啡底',amount:'2個'},{key:'action',label:'攪拌均勻',amount:''},{key:'ice',label:'冰塊',amount:'6分滿'},{key:'milk',label:'牛奶',amount:'320cc'}]},
+  {name:'蜂蜜拿鐵',temp:'熱',size:'中',steps:[{key:'honey',label:'蜂蜜',amount:'2下'},{key:'espresso',label:'咖啡底',amount:'1個'},{key:'milk',label:'打好的牛奶',amount:'300cc'}]},
+  {name:'蜂蜜拿鐵',temp:'熱',size:'大',steps:[{key:'honey',label:'蜂蜜',amount:'2.5下'},{key:'espresso',label:'咖啡底',amount:'1.5個'},{key:'milk',label:'打好的牛奶',amount:'340cc'}]},
+  {name:'山茶花輕拿鐵',temp:'冰',size:'中',steps:[{key:'camellia',label:'山茶花',amount:'2下'},{key:'milk',label:'牛奶',amount:'200cc'},{key:'ice',label:'冰塊',amount:'8.5分滿'},{key:'espresso',label:'咖啡底',amount:'0.5個'}]},
+  {name:'山茶花輕拿鐵',temp:'冰',size:'大',steps:[{key:'camellia',label:'山茶花',amount:'2.5下'},{key:'milk',label:'牛奶',amount:'260cc'},{key:'ice',label:'冰塊',amount:'8.5分滿'},{key:'espresso',label:'咖啡底',amount:'1個'}]},
+  {name:'山茶花輕拿鐵',temp:'冰',size:'特大',steps:[{key:'camellia',label:'山茶花',amount:'3下'},{key:'milk',label:'牛奶',amount:'320cc'},{key:'ice',label:'冰塊',amount:'8.5分滿'},{key:'espresso',label:'咖啡底',amount:'1.5個'}]},
+  {name:'山茶花輕拿鐵',temp:'熱',size:'中',steps:[{key:'camellia',label:'山茶花',amount:'2下'},{key:'espresso',label:'咖啡底',amount:'0.5個'},{key:'milk',label:'打好的牛奶',amount:'300cc'}]},
+  {name:'山茶花輕拿鐵',temp:'熱',size:'大',steps:[{key:'camellia',label:'山茶花',amount:'2.5下'},{key:'espresso',label:'咖啡底',amount:'1個'},{key:'milk',label:'打好的牛奶',amount:'340cc'}]},
+  {name:'極厚乳三層拿鐵',temp:'冰',size:'中',steps:[{key:'ice',label:'冰塊',amount:'100克'},{key:'milk',label:'厚乳',amount:'150cc'},{key:'milk',label:'厚乳奶泡',amount:'50cc'},{key:'espresso',label:'咖啡底',amount:'1個'}]},
+  {name:'極厚乳三層拿鐵',temp:'熱',size:'中',steps:[{key:'compound',label:'厚乳＋RO水',amount:'240cc+20cc'},{key:'action',label:'以奶管打熱',amount:''},{key:'espresso',label:'咖啡底',amount:'1個'}]},
+  {name:'抹茶拿鐵',temp:'冰',size:'中',steps:[{key:'sugar',label:'蔗糖',amount:'2下'},{key:'matcha',label:'抹茶液',amount:'20cc'},{key:'milk',label:'牛奶',amount:'200cc'},{key:'ice',label:'冰塊',amount:'8.5分滿'},{key:'espresso',label:'咖啡底',amount:'0.5個'}]},
+  {name:'抹茶拿鐵',temp:'冰',size:'大',steps:[{key:'sugar',label:'蔗糖',amount:'2.5下'},{key:'matcha',label:'抹茶液',amount:'25cc'},{key:'milk',label:'牛奶',amount:'260cc'},{key:'ice',label:'冰塊',amount:'8.5分滿'},{key:'espresso',label:'咖啡底',amount:'1個'}]},
+  {name:'抹茶拿鐵',temp:'冰',size:'特大',steps:[{key:'sugar',label:'蔗糖',amount:'3下'},{key:'matcha',label:'抹茶液',amount:'50cc'},{key:'milk',label:'牛奶',amount:'320cc'},{key:'ice',label:'冰塊',amount:'8.5分滿'},{key:'espresso',label:'咖啡底',amount:'1.5個'}]},
+  {name:'抹茶拿鐵',temp:'熱',size:'中',steps:[{key:'sugar',label:'蔗糖',amount:'2下'},{key:'espresso',label:'咖啡底',amount:'0.5個'},{key:'matcha',label:'抹茶液',amount:'20cc'},{key:'milk',label:'打好的牛奶',amount:'300cc'}]},
+  {name:'抹茶拿鐵',temp:'熱',size:'大',steps:[{key:'sugar',label:'蔗糖',amount:'2.5下'},{key:'espresso',label:'咖啡底',amount:'1個'},{key:'matcha',label:'抹茶液',amount:'25cc'},{key:'milk',label:'打好的牛奶',amount:'340cc'}]},
+  {name:'奶蓋海鹽美式',temp:'冰',size:'大',steps:[{key:'sugar',label:'蔗糖',amount:'2.5下'},{key:'ice',label:'冰塊',amount:'120克'},{key:'water',label:'RO水',amount:'200克'},{key:'espresso',label:'咖啡底',amount:'1個'},{key:'cream_cap',label:'奶蓋',amount:'50克'},{key:'sea_salt',label:'海鹽',amount:'1圈'}]},
+  {name:'奶蓋海鹽美式',temp:'冰',size:'特大',steps:[{key:'sugar',label:'蔗糖',amount:'3下'},{key:'ice',label:'冰塊',amount:'150克'},{key:'water',label:'RO水',amount:'300克'},{key:'espresso',label:'咖啡底',amount:'1.5個'},{key:'cream_cap',label:'奶蓋',amount:'60克'},{key:'sea_salt',label:'海鹽',amount:'2圈'}]},
+  {name:'咖啡凍飲拿鐵',temp:'冰',size:'大',steps:[{key:'sugar',label:'蔗糖',amount:'2.5下'},{key:'coffee_jelly',label:'咖啡凍',amount:'120克'},{key:'milk',label:'牛奶',amount:'200cc'},{key:'ice',label:'冰塊',amount:'120克'},{key:'espresso',label:'咖啡底',amount:'0.5個'}]},
+  {name:'咖啡凍飲拿鐵',temp:'冰',size:'特大',steps:[{key:'sugar',label:'蔗糖',amount:'3下'},{key:'coffee_jelly',label:'咖啡凍',amount:'150克'},{key:'milk',label:'牛奶',amount:'260cc'},{key:'ice',label:'冰塊',amount:'220克'},{key:'espresso',label:'咖啡底',amount:'1個'}]},
+  {name:'黑糖拿鐵',temp:'冰',size:'中',steps:[{key:'brown_sugar',label:'黑糖',amount:'2下'},{key:'milk',label:'牛奶',amount:'200cc'},{key:'ice',label:'冰塊',amount:'8.5分滿'},{key:'espresso',label:'咖啡底',amount:'1個'}]},
+  {name:'黑糖拿鐵',temp:'冰',size:'大',steps:[{key:'brown_sugar',label:'黑糖',amount:'2.5下'},{key:'milk',label:'牛奶',amount:'260cc'},{key:'ice',label:'冰塊',amount:'8.5分滿'},{key:'espresso',label:'咖啡底',amount:'1.5個'}]},
+  {name:'黑糖拿鐵',temp:'冰',size:'特大',steps:[{key:'brown_sugar',label:'黑糖',amount:'3下'},{key:'milk',label:'牛奶',amount:'320cc'},{key:'ice',label:'冰塊',amount:'8.5分滿'},{key:'espresso',label:'咖啡底',amount:'1.5個'}]},
+  {name:'黑糖拿鐵',temp:'熱',size:'中',steps:[{key:'brown_sugar',label:'黑糖',amount:'2下'},{key:'espresso',label:'咖啡底',amount:'1個'},{key:'milk',label:'打好的牛奶',amount:'300cc'}]},
+  {name:'黑糖拿鐵',temp:'熱',size:'大',steps:[{key:'brown_sugar',label:'黑糖',amount:'2.5下'},{key:'espresso',label:'咖啡底',amount:'1.5個'},{key:'milk',label:'打好的牛奶',amount:'340cc'}]},
+  {name:'榛果拿鐵',temp:'冰',size:'中',steps:[{key:'hazelnut',label:'榛果',amount:'2下'},{key:'milk',label:'牛奶',amount:'200cc'},{key:'ice',label:'冰塊',amount:'8.5分滿'},{key:'espresso',label:'咖啡底',amount:'1個'}]},
+  {name:'榛果拿鐵',temp:'冰',size:'大',steps:[{key:'hazelnut',label:'榛果',amount:'2.5下'},{key:'milk',label:'牛奶',amount:'260cc'},{key:'ice',label:'冰塊',amount:'8.5分滿'},{key:'espresso',label:'咖啡底',amount:'1.5個'}]},
+  {name:'榛果拿鐵',temp:'冰',size:'特大',steps:[{key:'hazelnut',label:'榛果',amount:'3下'},{key:'milk',label:'牛奶',amount:'320cc'},{key:'ice',label:'冰塊',amount:'8.5分滿'},{key:'espresso',label:'咖啡底',amount:'1.5個'}]},
+  {name:'榛果拿鐵',temp:'熱',size:'中',steps:[{key:'hazelnut',label:'榛果',amount:'2下'},{key:'espresso',label:'咖啡底',amount:'1個'},{key:'milk',label:'打好的牛奶',amount:'300cc'}]},
+  {name:'榛果拿鐵',temp:'熱',size:'大',steps:[{key:'hazelnut',label:'榛果',amount:'2.5下'},{key:'espresso',label:'咖啡底',amount:'1.5個'},{key:'milk',label:'打好的牛奶',amount:'340cc'}]},
+  {name:'香草拿鐵',temp:'冰',size:'中',steps:[{key:'vanilla',label:'香草',amount:'2下'},{key:'milk',label:'牛奶',amount:'200cc'},{key:'ice',label:'冰塊',amount:'8.5分滿'},{key:'espresso',label:'咖啡底',amount:'1個'}]},
+  {name:'香草拿鐵',temp:'冰',size:'大',steps:[{key:'vanilla',label:'香草',amount:'2.5下'},{key:'milk',label:'牛奶',amount:'260cc'},{key:'ice',label:'冰塊',amount:'8.5分滿'},{key:'espresso',label:'咖啡底',amount:'1.5個'}]},
+  {name:'香草拿鐵',temp:'冰',size:'特大',steps:[{key:'vanilla',label:'香草',amount:'3下'},{key:'milk',label:'牛奶',amount:'320cc'},{key:'ice',label:'冰塊',amount:'8.5分滿'},{key:'espresso',label:'咖啡底',amount:'1.5個'}]},
+  {name:'香草拿鐵',temp:'熱',size:'中',steps:[{key:'vanilla',label:'香草',amount:'2下'},{key:'espresso',label:'咖啡底',amount:'1個'},{key:'milk',label:'打好的牛奶',amount:'300cc'}]},
+  {name:'香草拿鐵',temp:'熱',size:'大',steps:[{key:'vanilla',label:'香草',amount:'2.5下'},{key:'espresso',label:'咖啡底',amount:'1.5個'},{key:'milk',label:'打好的牛奶',amount:'340cc'}]},
+  {name:'摩卡咖啡',temp:'冰',size:'中',steps:[{key:'cocoa',label:'可可粉',amount:'20克'},{key:'espresso',label:'咖啡底',amount:'1個'},{key:'action',label:'攪拌均勻',amount:''},{key:'ice',label:'冰塊',amount:'6分滿'},{key:'milk',label:'牛奶',amount:'200cc'}]},
+  {name:'摩卡咖啡',temp:'冰',size:'大',steps:[{key:'cocoa',label:'可可粉',amount:'30克'},{key:'espresso',label:'咖啡底',amount:'1.5個'},{key:'action',label:'攪拌均勻',amount:''},{key:'ice',label:'冰塊',amount:'6分滿'},{key:'milk',label:'牛奶',amount:'260cc'}]},
+  {name:'摩卡咖啡',temp:'冰',size:'特大',steps:[{key:'cocoa',label:'可可粉',amount:'50克'},{key:'espresso',label:'咖啡底',amount:'2個'},{key:'action',label:'攪拌均勻',amount:''},{key:'ice',label:'冰塊',amount:'6分滿'},{key:'milk',label:'牛奶',amount:'320cc'}]},
+  {name:'摩卡咖啡',temp:'熱',size:'中',steps:[{key:'cocoa',label:'可可粉',amount:'20克'},{key:'espresso',label:'咖啡底',amount:'1個'},{key:'milk',label:'打好的牛奶',amount:'300cc'}]},
+  {name:'摩卡咖啡',temp:'熱',size:'大',steps:[{key:'cocoa',label:'可可粉',amount:'30克'},{key:'espresso',label:'咖啡底',amount:'1.5個'},{key:'milk',label:'打好的牛奶',amount:'340cc'}]},
+  {name:'雙倍濃美式',temp:'冰',size:'大',steps:[{key:'ice',label:'冰塊',amount:'滿杯'},{key:'water',label:'RO水',amount:'6.5分滿'},{key:'espresso',label:'咖啡底',amount:'2個'}]},
+  {name:'雙倍濃美式',temp:'冰',size:'特大',steps:[{key:'ice',label:'冰塊',amount:'滿杯'},{key:'water',label:'RO水',amount:'6.5分滿'},{key:'espresso',label:'咖啡底',amount:'2.5個'}]},
+  {name:'雙倍濃美式',temp:'熱',size:'大',steps:[{key:'water',label:'熱水',amount:'320cc'},{key:'espresso',label:'咖啡底',amount:'2個'}]},
+  {name:'雙倍濃拿鐵',temp:'冰',size:'大',steps:[{key:'milk',label:'牛奶',amount:'260cc'},{key:'ice',label:'冰塊',amount:'8分滿'},{key:'espresso',label:'咖啡底',amount:'2個'}]},
+  {name:'雙倍濃拿鐵',temp:'冰',size:'特大',steps:[{key:'milk',label:'牛奶',amount:'300cc'},{key:'ice',label:'冰塊',amount:'8分滿'},{key:'espresso',label:'咖啡底',amount:'2.5個'}]},
+  {name:'雙倍濃拿鐵',temp:'熱',size:'大',steps:[{key:'espresso',label:'咖啡底',amount:'2個'},{key:'milk',label:'打好的牛奶',amount:'300cc'}]},
+  {name:'西西里咖啡',temp:'冰',size:'大',steps:[{key:'honey',label:'蜂蜜',amount:'30克'},{key:'espresso',label:'咖啡底',amount:'1個'},{key:'action',label:'攪拌均勻',amount:''},{key:'ice',label:'冰塊',amount:'220克'},{key:'water',label:'RO水',amount:'150克'},{key:'lemon',label:'檸檬汁',amount:'15克'},{key:'action',label:'再次攪拌',amount:''}]},
+  {name:'西西里咖啡',temp:'冰',size:'特大',steps:[{key:'honey',label:'蜂蜜',amount:'40克'},{key:'espresso',label:'咖啡底',amount:'1.5個'},{key:'action',label:'攪拌均勻',amount:''},{key:'ice',label:'冰塊',amount:'300克'},{key:'water',label:'RO水',amount:'150克'},{key:'lemon',label:'檸檬汁',amount:'18克'},{key:'action',label:'再次攪拌',amount:''}]},
+  {name:'紅茶',temp:'冰',size:'大',steps:[{key:'sugar',label:'蔗糖',amount:'2.5下'},{key:'ice',label:'冰塊',amount:'滿杯'},{key:'tea',label:'紅茶液',amount:'200cc'},{key:'water',label:'RO水',amount:'補滿'}]},
+  {name:'紅茶',temp:'冰',size:'特大',steps:[{key:'sugar',label:'蔗糖',amount:'3下'},{key:'ice',label:'冰塊',amount:'滿杯'},{key:'tea',label:'紅茶液',amount:'240cc'},{key:'water',label:'RO水',amount:'補滿'}]},
+  {name:'紅茶',temp:'熱',size:'大',steps:[{key:'sugar',label:'蔗糖',amount:'2.5下'},{key:'tea',label:'紅茶液',amount:'200cc'},{key:'water',label:'熱水',amount:'200cc'},{key:'action',label:'加熱至60度',amount:''}]},
+  {name:'烏龍茶',temp:'冰',size:'大',steps:[{key:'sugar',label:'蔗糖',amount:'2.5下'},{key:'ice',label:'冰塊',amount:'滿杯'},{key:'tea',label:'烏龍茶液',amount:'200cc'},{key:'water',label:'RO水',amount:'補滿'}]},
+  {name:'烏龍茶',temp:'冰',size:'特大',steps:[{key:'sugar',label:'蔗糖',amount:'3下'},{key:'ice',label:'冰塊',amount:'滿杯'},{key:'tea',label:'烏龍茶液',amount:'240cc'},{key:'water',label:'RO水',amount:'補滿'}]},
+  {name:'烏龍茶',temp:'熱',size:'大',steps:[{key:'sugar',label:'蔗糖',amount:'2.5下'},{key:'tea',label:'烏龍茶液',amount:'200cc'},{key:'water',label:'熱水',amount:'200cc'},{key:'action',label:'加熱至60度',amount:''}]},
+  {name:'鮮奶紅茶',temp:'冰',size:'大',steps:[{key:'sugar',label:'蔗糖',amount:'2.5下'},{key:'tea',label:'紅茶液',amount:'180cc'},{key:'milk',label:'牛奶',amount:'160cc'},{key:'ice',label:'冰塊',amount:'120克'}]},
+  {name:'鮮奶紅茶',temp:'冰',size:'特大',steps:[{key:'sugar',label:'蔗糖',amount:'3下'},{key:'tea',label:'紅茶液',amount:'260cc'},{key:'milk',label:'牛奶',amount:'220cc'},{key:'ice',label:'冰塊',amount:'120克'}]},
+  {name:'鮮奶紅茶',temp:'熱',size:'大',steps:[{key:'sugar',label:'蔗糖',amount:'2.5下'},{key:'tea',label:'紅茶液',amount:'220cc'},{key:'milk',label:'牛奶',amount:'220cc'},{key:'action',label:'加熱至60度',amount:''}]},
+  {name:'鮮奶烏龍茶',temp:'冰',size:'大',steps:[{key:'sugar',label:'蔗糖',amount:'2.5下'},{key:'tea',label:'烏龍茶液',amount:'24cc'},{key:'milk',label:'牛奶',amount:'100cc'},{key:'ice',label:'冰塊',amount:'120克'}]},
+  {name:'鮮奶烏龍茶',temp:'冰',size:'特大',steps:[{key:'sugar',label:'蔗糖',amount:'3下'},{key:'tea',label:'烏龍茶液',amount:'360cc'},{key:'milk',label:'牛奶',amount:'140cc'},{key:'ice',label:'冰塊',amount:'120克'}]},
+  {name:'鮮奶烏龍茶',temp:'熱',size:'大',steps:[{key:'sugar',label:'蔗糖',amount:'2.5下'},{key:'tea',label:'烏龍茶液',amount:'300cc'},{key:'milk',label:'牛奶',amount:'140cc'},{key:'action',label:'加熱至60度',amount:''}]},
+  {name:'蜂蜜鮮奶紅茶',temp:'冰',size:'大',steps:[{key:'honey',label:'蜂蜜',amount:'2.5下'},{key:'tea',label:'紅茶液',amount:'180cc'},{key:'milk',label:'牛奶',amount:'160cc'},{key:'ice',label:'冰塊',amount:'120克'}]},
+  {name:'蜂蜜鮮奶紅茶',temp:'冰',size:'特大',steps:[{key:'honey',label:'蜂蜜',amount:'3下'},{key:'tea',label:'紅茶液',amount:'260cc'},{key:'milk',label:'牛奶',amount:'220cc'},{key:'ice',label:'冰塊',amount:'120克'}]},
+  {name:'蜂蜜鮮奶紅茶',temp:'熱',size:'大',steps:[{key:'honey',label:'蜂蜜',amount:'2.5下'},{key:'tea',label:'紅茶液',amount:'220cc'},{key:'milk',label:'牛奶',amount:'220cc'},{key:'action',label:'加熱至60度',amount:''}]},
+  {name:'紅茶奶蓋',temp:'冰',size:'大',steps:[{key:'sugar',label:'蔗糖',amount:'2.5下'},{key:'tea',label:'紅茶液',amount:'200cc'},{key:'ice',label:'冰塊',amount:'150克'},{key:'cream_cap',label:'奶蓋',amount:'50克'}]},
+  {name:'紅茶奶蓋',temp:'冰',size:'特大',steps:[{key:'sugar',label:'蔗糖',amount:'3下'},{key:'tea',label:'紅茶液',amount:'300cc'},{key:'ice',label:'冰塊',amount:'200克'},{key:'cream_cap',label:'奶蓋',amount:'60克'}]},
+  {name:'烏龍茶奶蓋',temp:'冰',size:'大',steps:[{key:'sugar',label:'蔗糖',amount:'2.5下'},{key:'tea',label:'烏龍茶液',amount:'200cc'},{key:'ice',label:'冰塊',amount:'150克'},{key:'cream_cap',label:'奶蓋',amount:'50克'}]},
+  {name:'烏龍茶奶蓋',temp:'冰',size:'特大',steps:[{key:'sugar',label:'蔗糖',amount:'3下'},{key:'tea',label:'紅茶液',amount:'300cc'},{key:'ice',label:'冰塊',amount:'200克'},{key:'cream_cap',label:'奶蓋',amount:'60克'}]},
+  {name:'咖啡凍飲鮮奶茶',temp:'冰',size:'大',steps:[{key:'sugar',label:'蔗糖',amount:'2.5下'},{key:'coffee_jelly',label:'咖啡凍',amount:'120克'},{key:'tea',label:'紅茶液',amount:'120cc'},{key:'milk',label:'牛奶',amount:'120cc'},{key:'ice',label:'冰塊',amount:'滿杯'}]},
+  {name:'咖啡凍飲鮮奶茶',temp:'冰',size:'特大',steps:[{key:'sugar',label:'蔗糖',amount:'3下'},{key:'coffee_jelly',label:'咖啡凍',amount:'150克'},{key:'tea',label:'紅茶液',amount:'180cc'},{key:'milk',label:'牛奶',amount:'160cc'},{key:'ice',label:'冰塊',amount:'滿杯'}]},
+  {name:'花草茶',temp:'冰',size:'大',steps:[{key:'tea_bag',label:'花草茶包',amount:'1包'},{key:'water',label:'熱水',amount:'200cc'},{key:'action',label:'浸泡三分鐘',amount:''},{key:'ice',label:'冰塊',amount:'滿杯'}]},
+  {name:'花草茶',temp:'冰',size:'特大',steps:[{key:'tea_bag',label:'花草茶包',amount:'2包'},{key:'water',label:'熱水',amount:'300cc'},{key:'action',label:'浸泡三分鐘',amount:''},{key:'ice',label:'冰塊',amount:'滿杯'}]},
+  {name:'花草茶',temp:'熱',size:'大',steps:[{key:'tea_bag',label:'花草茶包',amount:'1包'},{key:'water',label:'熱水',amount:'400cc'}]},
+  {name:'奶精紅茶',temp:'冰',size:'大',steps:[{key:'sugar',label:'蔗糖',amount:'2.5下'},{key:'tea',label:'紅茶液',amount:'200cc'},{key:'milk',label:'奶精',amount:'140cc'},{key:'ice',label:'冰塊',amount:'100克'}]},
+  {name:'奶精紅茶',temp:'冰',size:'特大',steps:[{key:'sugar',label:'蔗糖',amount:'3下'},{key:'tea',label:'紅茶液',amount:'300cc'},{key:'milk',label:'牛奶',amount:'200cc'},{key:'ice',label:'冰塊',amount:'120克'}]},
+  {name:'奶精紅茶',temp:'熱',size:'大',steps:[{key:'sugar',label:'蔗糖',amount:'2.5下'},{key:'tea',label:'紅茶液',amount:'220cc'},{key:'milk',label:'奶精',amount:'220cc'},{key:'action',label:'加熱至60度',amount:''}]},
+  {name:'抹茶歐蕾',temp:'冰',size:'中',steps:[{key:'sugar',label:'蔗糖',amount:'2下'},{key:'milk',label:'牛奶',amount:'200cc'},{key:'ice',label:'冰塊',amount:'8.5分滿'},{key:'compound',label:'抹茶液＋RO水',amount:'30cc+40cc'}]},
+  {name:'抹茶歐蕾',temp:'冰',size:'大',steps:[{key:'sugar',label:'蔗糖',amount:'2.5下'},{key:'milk',label:'牛奶',amount:'260cc'},{key:'ice',label:'冰塊',amount:'8.5分滿'},{key:'compound',label:'抹茶液＋RO水',amount:'40cc+50cc'}]},
+  {name:'抹茶歐蕾',temp:'冰',size:'特大',steps:[{key:'sugar',label:'蔗糖',amount:'3下'},{key:'milk',label:'牛奶',amount:'320cc'},{key:'ice',label:'冰塊',amount:'8.5分滿'},{key:'compound',label:'抹茶液＋RO水',amount:'60cc+70cc'}]},
+  {name:'抹茶歐蕾',temp:'熱',size:'中',steps:[{key:'sugar',label:'蔗糖',amount:'2下'},{key:'compound',label:'抹茶液＋RO水',amount:'30cc+40cc'},{key:'milk',label:'打好的牛奶',amount:'300cc'}]},
+  {name:'抹茶歐蕾',temp:'熱',size:'大',steps:[{key:'sugar',label:'蔗糖',amount:'2.5下'},{key:'compound',label:'抹茶液＋RO水',amount:'40cc+50cc'},{key:'milk',label:'打好的牛奶',amount:'340cc'}]},
+  {name:'可可歐蕾',temp:'冰',size:'中',steps:[{key:'compound',label:'可可粉＋牛奶',amount:'25克+120cc'},{key:'action',label:'以奶管打熱攪拌',amount:''},{key:'ice',label:'冰塊',amount:'滿杯'}]},
+  {name:'可可歐蕾',temp:'冰',size:'大',steps:[{key:'compound',label:'可可粉＋牛奶',amount:'37.5克+180cc'},{key:'action',label:'以奶管打熱攪拌',amount:''},{key:'ice',label:'冰塊',amount:'滿杯'}]},
+  {name:'可可歐蕾',temp:'冰',size:'特大',steps:[{key:'compound',label:'可可粉＋牛奶',amount:'50克+240cc'},{key:'action',label:'以奶管打熱攪拌',amount:''},{key:'ice',label:'冰塊',amount:'滿杯'}]},
+  {name:'可可歐蕾',temp:'熱',size:'中',steps:[{key:'compound',label:'可可粉＋牛奶',amount:'25克+230cc'},{key:'action',label:'以奶管打熱攪拌均勻',amount:''}]},
+  {name:'可可歐蕾',temp:'熱',size:'大',steps:[{key:'compound',label:'可可粉＋牛奶',amount:'37.5克+300cc'},{key:'action',label:'以奶管打熱攪拌均勻',amount:''}]},
+  {name:'國寶茶',temp:'冰',size:'大',steps:[{key:'sugar',label:'蔗糖',amount:'2.5下'},{key:'tea_bag',label:'國寶茶包',amount:'1包'},{key:'water',label:'熱水',amount:'200cc'},{key:'action',label:'浸泡三分鐘',amount:''},{key:'ice',label:'冰塊',amount:'滿杯'}]},
+  {name:'國寶茶',temp:'熱',size:'大',steps:[{key:'sugar',label:'蔗糖',amount:'2.5下'},{key:'tea_bag',label:'國寶茶包',amount:'1包'},{key:'water',label:'熱水',amount:'400cc'},{key:'action',label:'浸泡三分鐘',amount:''}]},
+  {name:'莓果茶',temp:'冰',size:'大',steps:[{key:'sugar',label:'蔗糖',amount:'2.5下'},{key:'berry_jam',label:'莓果醬',amount:'50克'},{key:'tea',label:'紅茶液',amount:'250cc'},{key:'ice',label:'冰塊',amount:'滿杯'},{key:'water',label:'RO水',amount:'補滿'}]},
+  {name:'莓果茶',temp:'熱',size:'大',steps:[{key:'sugar',label:'蔗糖',amount:'2.5下'},{key:'berry_jam',label:'莓果醬',amount:'50克'},{key:'tea',label:'紅茶液',amount:'200cc'},{key:'water',label:'熱水',amount:'150cc'},{key:'action',label:'以奶管打熱攪拌',amount:''}]},
+  {name:'手沖咖啡',temp:'冰',size:'中',steps:[{key:'coffee_bean',label:'咖啡豆',amount:'22克'},{key:'water',label:'熱水',amount:'220cc'}]},
+  {name:'手沖咖啡',temp:'冰',size:'大',steps:[{key:'coffee_bean',label:'咖啡豆',amount:'27克'},{key:'water',label:'熱水',amount:'280cc'}]},
+  {name:'手沖咖啡',temp:'熱',size:'中',steps:[{key:'coffee_bean',label:'咖啡豆',amount:'22克'},{key:'water',label:'熱水',amount:'360cc'}]},
+  {name:'手沖咖啡',temp:'熱',size:'大',steps:[{key:'coffee_bean',label:'咖啡豆',amount:'27克'},{key:'water',label:'熱水',amount:'480cc'}]},
+  {name:'冷萃咖啡',temp:'冰',size:'中',steps:[{key:'cold_brew',label:'冷萃咖啡液',amount:'240cc'}]},
+  {name:'冷萃咖啡',temp:'冰',size:'大',steps:[{key:'cold_brew',label:'冷萃咖啡液',amount:'300cc'}]},
+  {name:'冷萃咖啡',temp:'冰',size:'特大',steps:[{key:'cold_brew',label:'冷萃咖啡液',amount:'380cc'}]},
+  {name:'檸檬冷萃',temp:'冰',size:'大',steps:[{key:'sugar',label:'蔗糖',amount:'5下'},{key:'lemon',label:'檸檬汁',amount:'20cc'},{key:'ice',label:'冰塊',amount:'120克'},{key:'cold_brew',label:'堅果爵士冷萃液',amount:'240cc'}]},
+  {name:'檸檬冷萃',temp:'冰',size:'特大',steps:[{key:'sugar',label:'蔗糖',amount:'6.5下'},{key:'lemon',label:'檸檬汁',amount:'30cc'},{key:'ice',label:'冰塊',amount:'150克'},{key:'cold_brew',label:'堅果爵士冷萃液',amount:'360cc'}]},
+];
+
+// ─── PENDING CONFIGS ───────────────────────────────────────
+const MILK_TYPES=[
+  {label:'牛奶',amtType:'cc'},
+  {label:'打好的牛奶',amtType:'cc'},
+  {label:'厚乳',amtType:'cc'},
+  {label:'厚乳奶泡',amtType:'cc'},
+  {label:'OATLY燕麥奶',amtType:'text',ph:'搖勻___cc / 打熱___cc'},
+  {label:'OATSIDE燕麥奶',amtType:'text',ph:'搖勻___cc / 打熱___cc'},
+  {label:'奶精',amtType:'cc'},
+];
+
+const PENDING_CFG={
+  milk:{title:'選擇奶的種類'},
+  ice:{title:'選擇冰量',amounts:['滿杯','9分滿','8.5分滿','8分滿','7.5分滿','6分滿','100克','120克','150克','200克','220克','300克']},
+  sugar:{title:'選擇份量（下）',amounts:['0.5下','1下','1.5下','2下','2.5下','3下','4/3下','5下','6.5下']},
+  honey:{title:'選擇份量（蜂蜜）',amounts:['2下','2.5下','3下','30克','40克']},
+  espresso:{title:'選擇份量（個）',amounts:['0.5個','1個','1.5個','2個','2.5個']},
+  water:{title:'選擇水量',amounts:['補滿','150cc','200cc','220cc','280cc','300cc','320cc','350cc','360cc','400cc','480cc','150克','200克','300克']},
+};
+
+function getPendingType(k){
+  return {milk:'milk',ice:'ice',water:'water',sugar:'sugar',brown_sugar:'sugar',
+    hazelnut:'sugar',vanilla:'sugar',caramel_salt:'sugar',camellia:'sugar',
+    honey:'honey',espresso:'espresso'}[k]||null;
+}
+function getAmtType(k){
+  if(k==='action') return 'none';
+  if(['tea','matcha','lemon','cold_brew'].includes(k)) return 'cc';
+  return 'text';
+}
+
+const MAIN=[
+  {key:'tea',label:'茶'},{key:'milk',label:'奶'},{key:'ice',label:'冰塊'},
+  {key:'water',label:'水'},{key:'espresso',label:'咖啡底'},{key:'sugar',label:'蔗糖'},
+];
+const SYRUP=[
+  {key:'hazelnut',label:'榛果'},{key:'vanilla',label:'香草'},{key:'caramel_salt',label:'焦糖海鹽'},
+];
+const MORE=[
+  {key:'cream_cap',label:'奶蓋'},{key:'sea_salt',label:'海鹽'},{key:'matcha',label:'抹茶液'},
+  {key:'cocoa',label:'可可粉'},{key:'honey',label:'蜂蜜'},{key:'tea_bag',label:'茶包'},
+  {key:'berry_jam',label:'莓果醬'},{key:'coffee_jelly',label:'咖啡凍'},
+  {key:'camellia',label:'山茶花'},{key:'brown_sugar',label:'黑糖'},
+  {key:'lemon',label:'檸檬汁'},{key:'cold_brew',label:'冷萃液'},
+  {key:'coffee_bean',label:'咖啡豆'},
+  {key:'compound',label:'複合食材',isSpecial:true},
+  {key:'action',label:'動作步驟',isAction:true},
+];
+
+// ─── STATE ───────────────────────────────────────────────
+let S={phase:'start',recipe:null,steps:[],results:[],score:{c:0,t:0},showMore:false,pending:null};
+
+function norm(s){return (s||'').replace(/\s+/g,'').toLowerCase();}
+function check(u,c){
+  if(c.key==='action') return u.key==='action';
+  return u.key===c.key && norm(u.amount)===norm(c.amount);
+}
+function sizeTag(s){return {中:'M 中',大:'L 大',特大:'XL 特大'}[s]||s;}
+
+// ─── MUTATIONS ──────────────────────────────────────────
+function pickRandom(){
+  S.recipe=RECIPES[Math.floor(Math.random()*RECIPES.length)];
+  S.steps=[];S.results=[];S.showMore=false;S.pending=null;S.phase='quiz';
+  render();
+}
+function tapBtn(key,label){
+  const pt=getPendingType(key);
+  if(pt){S.pending={type:pt,btn:{key,label}};S.showMore=false;}
+  else pushStep({key,label,amount:'',amtType:getAmtType(key)});
+  render();
+}
+function pushStep(step){
+  S.steps.push(step);
+  const i=S.steps.length-1;
+  setTimeout(()=>{const el=document.getElementById('amt_'+i);if(el)el.focus();},80);
+}
+function selectMilk(i){
+  const m=MILK_TYPES[i];
+  pushStep({key:'milk',label:m.label,amount:'',amtType:m.amtType,ph:m.ph||''});
+  S.pending=null;render();
+}
+function selectAmt(a){
+  const {btn}=S.pending;
+  pushStep({key:btn.key,label:btn.label,amount:a,amtType:'text'});
+  S.pending=null;render();
+}
+function selectCustom(){
+  const {btn}=S.pending;
+  const amtType=btn.key==='espresso'?'text':'cc';
+  pushStep({key:btn.key,label:btn.label,amount:'',amtType});
+  S.pending=null;render();
+}
+function cancelPending(){S.pending=null;render();}
+function removeStep(i){S.steps.splice(i,1);render();}
+function updateAmt(i,v){S.steps[i].amount=v;}
+function updateAmtCC(i,v){S.steps[i].amount=v?v+'cc':'';S.steps[i]._n=v;}
+function submitAnswer(){
+  const res=[];
+  const mx=Math.max(S.steps.length,S.recipe.steps.length);
+  for(let i=0;i<mx;i++){
+    const u=S.steps[i]||null,c=S.recipe.steps[i]||null;
+    if(u&&c) res.push({u,c,ok:check(u,c)});
+    else if(u) res.push({u,c:null,ok:false,extra:true});
+    else res.push({u:null,c,ok:false,missing:true});
+  }
+  S.results=res;S.score={c:res.filter(r=>r.ok).length,t:S.recipe.steps.length};
+  S.phase='result';render();
+}
+
+// ─── RENDER ──────────────────────────────────────────────
+function renderHeader(right=''){
+  const r=S.recipe,tc=r.temp==='冰'?'cold':'hot';
+  return `<div class="hdr"><div class="drink-name">${r.name}</div>
+    <div class="meta"><span class="badge ${tc}">${r.temp}</span>
+    <span class="badge gray">${sizeTag(r.size)}</span>
+    <span class="ml-auto">${right}</span></div></div>`;
+}
+
+function renderTop(){
+  const mains=MAIN.map(b=>`<button class="ibtn" onclick="tapBtn('${b.key}','${b.label}')">${b.label}</button>`).join('');
+  const syrups=SYRUP.map(b=>`<button class="sbtn" onclick="tapBtn('${b.key}','${b.label}')">${b.label}</button>`).join('');
+  return `<div class="top">
+    <div class="sec">食材</div>
+    <div class="grid3">${mains}</div>
+    <div class="sec">果露</div>
+    <div class="syrup-row">${syrups}</div>
+    <button class="morebtn" onclick="toggleMore()">${S.showMore?'收起 ▲':'更多食材 ▼'}</button>
+  </div>`;
+}
+
+function renderPending(){
+  if(!S.pending) return '';
+  const {type,btn}=S.pending,cfg=PENDING_CFG[type];
+  if(type==='milk'){
+    const btns=MILK_TYPES.map((m,i)=>`<button class="pill" onclick="selectMilk(${i})">${m.label}</button>`).join('');
+    return `<div class="pend"><div class="pend-head"><span class="pend-title">${cfg.title}</span><button class="pend-cancel" onclick="cancelPending()">×</button></div><div class="pills">${btns}</div></div>`;
+  }
+  const pills=cfg.amounts.map(a=>`<button class="pill" onclick="selectAmt('${a}')">${a}</button>`).join('');
+  return `<div class="pend"><div class="pend-head"><span class="pend-title">${cfg.title}</span><button class="pend-cancel" onclick="cancelPending()">×</button></div>
+    <div class="pills">${pills}<button class="pill other" onclick="selectCustom()">其他…</button></div></div>`;
+}
+
+function amtField(s,i){
+  if(s.amtType==='none') return `<span class="atag">動作</span>`;
+  if(s.amtType==='cc'){
+    return `<div class="cc-wrap"><input id="amt_${i}" type="number" class="cc-num" value="${s._n||''}" placeholder="數量" oninput="updateAmtCC(${i},this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('amt_${i+1}');if(n)n.focus();}"><span class="cc-unit">cc</span></div>`;
+  }
+  return `<input id="amt_${i}" class="ainp" value="${s.amount}" placeholder="${s.ph||'份量'}" oninput="updateAmt(${i},this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('amt_${i+1}');if(n)n.focus();}">`;
+}
+
+function renderSteps(){
+  if(!S.steps.length) return `<div class="bot"><div class="sec">已加入步驟</div><div class="empty">點選上方食材開始建立步驟</div></div>`;
+  const rows=S.steps.map((s,i)=>`<div class="srow"><span class="snum">${i+1}</span><span class="slbl">${s.label}</span>${amtField(s,i)}<button class="delbtn" onclick="removeStep(${i})">×</button></div>`).join('');
+  return `<div class="bot"><div class="sec">已加入步驟（${S.steps.length}步）</div>${rows}</div>`;
+}
+
+function renderMore(){
+  if(!S.showMore) return '';
+  const items=MORE.map(b=>`<button class="mitm ${b.isAction?'act':b.isSpecial?'spc':''}" onclick="tapBtn('${b.key}','${b.label}')">${b.label}</button>`).join('');
+  return `<div class="overlay" onclick="closeMore()"><div class="msheet" onclick="event.stopPropagation()">
+    <div class="mhead"><span class="mtitle">更多食材</span><button class="mclosebtn" onclick="closeMore()">×</button></div>
+    <div class="mgrid">${items}</div></div></div>`;
+}
+
+function renderResult(){
+  const rows=S.results.map((r,i)=>{
+    if(r.missing) return `<div class="rrow fail"><span class="rico">✗</span><div class="rbody"><div class="rtit">步驟 ${i+1} 遺漏</div><div class="rhint">正確：${r.c.label} ${r.c.amount}</div></div></div>`;
+    if(r.extra) return `<div class="rrow fail"><span class="rico">✗</span><div class="rbody"><div class="rtit">步驟 ${i+1} 多餘</div><div class="rwrong">你輸入：${r.u.label} ${r.u.amount}</div></div></div>`;
+    return `<div class="rrow ${r.ok?'ok':'fail'}"><span class="rico">${r.ok?'✓':'✗'}</span><div class="rbody"><div class="rtit">步驟 ${i+1}</div>
+      ${r.ok?`<div class="rcorrect">✓ ${r.c.label} ${r.c.amount}</div>`:`<div class="rwrong">你的：${r.u.label} ${r.u.amount||'（未填）'}</div><div class="rhint">正確：${r.c.label} ${r.c.amount}</div>`}
+    </div></div>`;
+  }).join('');
+  const sc=S.score,cls=sc.c===sc.t?'score-ok':'score-fail';
+  return renderHeader(`<span class="${cls}">${sc.c}/${sc.t} 步正確</span>`)+
+    `<div class="rwrap">${rows}</div>
+     <div class="foot"><button class="subbtn" onclick="pickRandom()">下一題</button><button class="clrbtn" onclick="retryQuiz()">重試</button></div>`;
+}
+
+function render(){
+  const app=document.getElementById('app');
+  if(S.phase==='start'){
+    app.innerHTML=`<div class="start">
+      <div style="font-size:52px">☕</div>
+      <div style="font-size:22px;font-weight:700;text-align:center">備料練習測驗</div>
+      <div style="font-size:13px;color:#7a6a5a;text-align:center;line-height:1.6">按照正確步驟和份量<br>練習所有飲品製作流程</div>
+      <button class="subbtn" style="padding:13px 48px;width:auto;margin-top:8px" onclick="pickRandom()">開始練習</button>
+      <div style="font-size:11px;color:#b0a090">共 ${RECIPES.length} 款飲品配方</div>
+    </div>`;
+    return;
+  }
+  if(S.phase==='result'){app.innerHTML=renderResult();return;}
+  const stepCt=`<span style="font-size:12px;color:#b0a090">${S.steps.length} 步</span>`;
+  app.innerHTML=renderHeader(stepCt)+renderTop()+renderPending()+renderSteps()+
+    `<div class="foot"><button class="subbtn" ${!S.steps.length?'disabled':''} onclick="submitAnswer()">提交答案</button><button class="clrbtn" onclick="clearSteps()">清除</button></div>`+
+    renderMore();
+}
+
+window.tapBtn=tapBtn;
+window.selectMilk=selectMilk;
+window.selectAmt=selectAmt;
+window.selectCustom=selectCustom;
+window.cancelPending=cancelPending;
+window.removeStep=removeStep;
+window.updateAmt=updateAmt;
+window.updateAmtCC=updateAmtCC;
+window.submitAnswer=submitAnswer;
+window.pickRandom=pickRandom;
+window.toggleMore=()=>{S.showMore=!S.showMore;S.pending=null;render();};
+window.closeMore=()=>{S.showMore=false;render();};
+window.clearSteps=()=>{S.steps=[];S.pending=null;render();};
+window.retryQuiz=()=>{S.steps=[];S.results=[];S.phase='quiz';render();};
+
+render();
+</script>
+</body>
+</html>
